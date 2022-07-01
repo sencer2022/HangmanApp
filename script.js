@@ -1,11 +1,14 @@
 const word_el = document.getElementById('word');
 const popup = document.getElementById('popup-container');
 const message_el = document.getElementById('success-message');
-//const wrongLetters_el = document.getElementById('wrong-letters');
+const wrongLetters_el = document.getElementById('wrong-letters');
+const items = document.querySelectorAll('.item');
+const message2_el = document.getElementById('message');
 
 const correctLetters = [];
 const wrongLetters = [];
 const selectedWord = getRandomWord();
+
 
 function getRandomWord(){
     const words = ["karanfil", "gül", "papatya"];
@@ -22,13 +25,43 @@ function displayWord(){
                 ${correctLetters.includes(letter) ? letter: ''}
             </div>
         `).join('')}
-    `;
+    `; //join harften sonraki virgülü kaldırarak string ifadeye çevirir.
 
     const w = word_el.innerText.replace(/\n/g, '') // Satır atlama işlevi olan \n 'i bulur ve g ile hepsini bulur yerine '' koyduğumuz için yerine bir şey koymaz. Böylelikle innerText'i yanyana yazdırırız.
     if (w === selectedWord){
         popup.style.display = 'flex';
-        message_el.innerText = 'Congrats you won!'
+        message_el.innerText = 'Congrats you won!';
     }
+}
+
+function updateWrongLetters(){
+    wrongLetters_el.innerHTML = `
+        ${wrongLetters.length>0?'<h3>Wrong words:</h3>':''}
+        ${wrongLetters.map(letter =>`<span>${' '+letter}</span>`)}`;
+
+    items.forEach((item, index) => {
+        const errorCount = wrongLetters.length;
+
+        if(index < errorCount){
+            item.style.display = 'block';
+        }else{
+            item.style.display = 'none';
+        }
+    });
+
+    if(wrongLetters.length === items.length){
+        popup.style.display = 'flex';
+        message_el.innerText = 'Unfortunately you lost :(';
+    }
+}
+
+function displayMessage() {
+    message2_el.classList.add('show');
+
+    setTimeout(function(){
+        message2_el.classList.remove('show');
+    }, 2000);
+
 }
 
 window.addEventListener('keydown', function(e){
@@ -42,14 +75,14 @@ window.addEventListener('keydown', function(e){
                 correctLetters.push(letter);
                 displayWord();
             }else{
-                console.log('The letter you enter typed before.');
+                displayMessage();
             }
         }else{
             if(!wrongLetters.includes(letter)){
                 wrongLetters.push(letter);
-                console.log('Hatalı harfleri güncelle.');
+                updateWrongLetters();
             }else{
-                console.log('The letter you enter typed before.');
+                displayMessage();
             }
         }
     }
