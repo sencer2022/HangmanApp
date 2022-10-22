@@ -81,10 +81,10 @@ body {
     border-radius: 5px;
     padding: 10px 80px;
     position: absolute;
-    bottom: -80px;
+    bottom: -90px;
     transition: transform 0.4s ease-in-out;
 }
 
 #message.show {
-    transform: translateY(-80px);
+    transform: translateY(-90px);
 }
